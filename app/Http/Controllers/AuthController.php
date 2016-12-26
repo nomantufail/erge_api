@@ -58,37 +58,41 @@ class AuthController extends Controller {
     }
 
     public function verifyEmail() {
-        set_time_limit(60);
-        $alldata = (json_decode(file_get_contents('php://input')));
-        
-        if (isset($alldata->email)) {
-            $user = User::where('email', $alldata->email)->first();
-            if (!$user) {
-                $token = \Illuminate\Support\Str::random(4);
-                $savecode = RegistrationCode::find($alldata->email);
-                if(!$savecode){
-                    $savecode = new RegistrationCode;
-                }
-                
-                $savecode->email = $alldata->email;
-                $savecode->code = $token;
-                $savecode->save();
-                
-                $data['token'] = $token;
-                $emaildata = array('to' => $alldata->email, 'to_name' => 'Dear User');
-                
-                \Illuminate\Support\Facades\Mail::send('emailsendcode', $data, function($message) use ($emaildata) {
-                    $message->to($emaildata['to'], $emaildata['to_name'])
+        try{
+            set_time_limit(60);
+            $alldata = (json_decode(file_get_contents('php://input')));
+
+            if (isset($alldata->email)) {
+                $user = User::where('email', $alldata->email)->first();
+                if (!$user) {
+                    $token = \Illuminate\Support\Str::random(4);
+                    $savecode = RegistrationCode::find($alldata->email);
+                    if(!$savecode){
+                        $savecode = new RegistrationCode;
+                    }
+
+                    $savecode->email = $alldata->email;
+                    $savecode->code = $token;
+                    $savecode->save();
+
+                    $data['token'] = $token;
+                    $emaildata = array('to' => $alldata->email, 'to_name' => 'Dear User');
+
+                    \Illuminate\Support\Facades\Mail::send('emailsendcode', $data, function($message) use ($emaildata) {
+                        $message->to($emaildata['to'], $emaildata['to_name'])
                             ->from('no-reply@erge.com', 'Erge')
                             ->subject('Your Code');
-                });
-                
-                return Response::json([ 'status' => 'success', 'SuccessMessage' => 'Code Emailed SuccessFully', 'code'=>$token]);
+                    });
+
+                    return Response::json([ 'status' => 'success', 'SuccessMessage' => 'Code Emailed SuccessFully', 'code'=>$token]);
+                } else {
+                    return Response::json([ 'status' => 'error', 'serviceName' => 'verifyEmail', 'ErrorMessage' => env('ERROR_1004'), 'ErrorCode' => '1004']);
+                }
             } else {
-                return Response::json([ 'status' => 'error', 'serviceName' => 'verifyEmail', 'ErrorMessage' => env('ERROR_1004'), 'ErrorCode' => '1004']);
+                return missingparameters('verifyEmail');
             }
-        } else {
-            return missingparameters('verifyEmail');
+        }catch (\Exception $e){
+            return Response::json($e->getMessage());
         }
     }
 
