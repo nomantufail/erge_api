@@ -13,7 +13,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Origin: *");
+        header("Content-Type: application/json: true");
+        header('Access-Control-Allow-Credentials: true');
+        header("Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding");
+        header("Access-Control-Request-Method: GET,POST,PUT,PATCH,DELETE,OPTIONS");
     }
 
     /**

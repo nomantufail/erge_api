@@ -83,7 +83,7 @@ class AuthController extends Controller {
                             ->subject('Your Code');
                 });
                 
-                return Response::json([ 'status' => 'success', 'SuccessMessage' => 'Code Emailed SuccessFully']);
+                return Response::json([ 'status' => 'success', 'SuccessMessage' => 'Code Emailed SuccessFully', 'code'=>$token]);
             } else {
                 return Response::json([ 'status' => 'error', 'serviceName' => 'verifyEmail', 'ErrorMessage' => env('ERROR_1004'), 'ErrorCode' => '1004']);
             }
