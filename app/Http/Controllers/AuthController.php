@@ -19,10 +19,10 @@ class AuthController extends Controller {
     public function register() {
         $registerdata = (json_decode(file_get_contents('php://input')));
         if (isset($registerdata->email) && isset($registerdata->f_name) && isset($registerdata->l_name) && isset($registerdata->mobile) && isset($registerdata->password) && isset($registerdata->code) && isset($registerdata->role) && isset($registerdata->lat) && isset($registerdata->long) && isset($registerdata->plateform) && isset($registerdata->device_id)) {
-            $confirmcode = RegistrationCode::where(array('email' => $registerdata->email, 'code' => $registerdata->code))->first();
-            if (!$confirmcode) {
-                return Response::json([ 'status' => 'error', 'serviceName' => 'register', 'ErrorMessage' => env('ERROR_1005'), 'ErrorCode' => '1005']);
-            } else {
+//            $confirmcode = RegistrationCode::where(array('email' => $registerdata->email, 'code' => $registerdata->code))->first();
+//            if (!$confirmcode) {
+//                return Response::json([ 'status' => 'error', 'serviceName' => 'register', 'ErrorMessage' => env('ERROR_1005'), 'ErrorCode' => '1005']);
+//            } else {
                 RegistrationCode::where('email',$registerdata->email)->delete();
                 $olduser = User::where('email',$registerdata->email)->first();
                 if(!$olduser){
@@ -52,9 +52,10 @@ class AuthController extends Controller {
                 }
                 
             }
-        } else {
-            return missingparameters('register');
-        }
+        return missingparameters('register');
+//        } else {
+//            return missingparameters('register');
+//        }
     }
 
     public function verifyEmail() {
